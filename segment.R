@@ -1,5 +1,4 @@
 library(tiff)
-setwd("C:/Users/samue/Downloads")
 
 rawImage = readTIFF("N 134 copy.tif")
 truth = readTIFF("N 134 groundtruth.tif", convert = T)
