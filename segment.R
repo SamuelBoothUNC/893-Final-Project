@@ -129,11 +129,11 @@ getDist = function(fittedImg, trueImg)
 # accuracy = 1 - getDist(test, truth)
 # accuracy
 
-#On test data, 93% of pixels were reproduced accurately
+#On validation data, 93.01106% of pixels were reproduced accurately
 
 
 #==================================================================================================================
-#Section 3: 
+#Section 3: script for processing other images
 
 
 
