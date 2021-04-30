@@ -106,10 +106,9 @@ for path, subdirs, files in os.walk(imgs_dir): #list all files, directories in t
         ##############
 
         alldata=save_data(graph,center=False)
-        data_name = files[i].split(".")[0][0:6] + "_alldata.xlsx"
+        data_name = files[i].split(".")[0][0:6] + "_alldata.xlsx"  # avoid ".tif" in xlsx name
         print ("data name: " + data_name)
 
-        #writer = pd.ExcelWriter('/Users/wangxuelin/Downloads/STARE-im/im0324_alldata.xlsx', engine='xlsxwriter')
         writer = pd.ExcelWriter(save_dir+data_name, engine='xlsxwriter')
 
         alldata.to_excel(writer,index=False)
