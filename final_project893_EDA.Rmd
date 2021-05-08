@@ -1,0 +1,91 @@
+---
+title: "final_project893"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("readxl")
+library("ggplot2")
+```
+
+## Load Data
+
+```{r}
+images = c("p2", "p3", "p4", "p5", "p6", "p7","test1","p7x","output")
+for(image in images){
+  assign(paste0(image,"_all"),
+         read_excel(paste0("Data/validation_data/feature_extraction/feature/",
+                           image,"_alldata.xlsx")))
+  assign(paste0(image,"_d"),
+         read_excel(paste0("Data/validation_data/feature_extraction/feature/",
+                           image,"_degreedata.xlsx")))
+}
+```
+
+```{r}
+degrees = list(p2_d, p3_d, p4_d, p5_d, p6_d, p7_d,test1_d,p7x_d,output_d)
+#lapply(degrees, FUN=function(x) hist(x$degree))
+
+total = c()
+for(i in 1:length(images)){
+  df = as.data.frame(table(degrees[[i]]$degree))
+  df$day = images[i]
+  df$pcent = df$Freq/nrow(degrees[[i]])*100
+  total = rbind(total, df)
+}
+total$Var1 = as.numeric(total$Var1)
+
+ggplot(data=total[total$day %in% c("p2", "p3", "p4", "p5", "p6", "p7"),],
+       aes(x=Var1,y=pcent,col=day))+
+  geom_line() +
+  xlab("Node Degree") +
+  ylab("Percent of Nodes") +
+  labs(title=paste("Percent of Nodes with Given Degree, by Day"))
+
+ggplot(data=total, aes(x=Var1,y=pcent,col=day))+
+  geom_line() +
+  xlab("Node Degree") +
+  ylab("Percent of Nodes") +
+  labs(title=paste("Percent of Nodes with Given Degree, by Day"))
+```
+
+```{r}
+library("patchwork")
+
+alldata = list(p2_all, p3_all, p4_all, p5_all, p6_all, p7_all)
+
+all_total = c()
+for(i in 1:length(alldata)){
+  df = alldata[[i]][,4:8]
+  df$day = images[i]
+  all_total = rbind(all_total, df)
+}
+
+len = ggplot(mapping=aes(x=day,y=length),data=all_total) +
+  geom_boxplot() +
+  ggtitle("Boxplots of Length by Day") +
+  ylab("Length") +
+  xlab("Day")
+
+wid = ggplot(mapping=aes(x=day,y=width),data=all_total) +
+  geom_boxplot() +
+  ggtitle("Boxplots of Width by Day") +
+  ylab("Width") +
+  xlab("Day")
+
+tort = ggplot(mapping=aes(x=day,y=tortuosity),data=all_total) +
+  geom_boxplot() +
+  ggtitle("Boxplots of Tortuosity by Day") +
+  ylab("Tortuosity") +
+  xlab("Day")
+
+counts = ggplot(all_total, aes(x=day)) +
+  geom_bar(stat = "count") +
+  ggtitle("Number of Edges by Day") +
+  ylab("Edges") +
+  xlab("Day")
+
+(len | wid) / (tort | counts)
+```
+
